@@ -1,20 +1,29 @@
 import { Component } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { getGallery } from '../components/Helpers/Api';
+import { Searchbar } from './Searchbar/Searchbar';
 export class App extends Component {
   state = {
-    gallary: [],
+    serchImageName: '',
+    isLoading: false,
   };
-  async componentDidMount() {
-    const data = await getGallery();
-    this.setState({ gallary: data });
-    console.log(data);
-  }
+  handleFormSubmit = serchImageName => {
+    this.setState({ serchImageName });
+  };
+  // async componentDidMount() {
+  //   const data = await getGallery();
+  //   this.setState({ gallary: data });
+  //   console.log(data);
+  // }
 
   render() {
     return (
       <>
-        <ImageGallery />
+        <Searchbar onFormSubmit={this.handleFormSubmit} />
+        {this.state.isLoading ? (
+          'LOADING'
+        ) : (
+          <ImageGallery serchImageName={this.state.serchImageName} />
+        )}
       </>
     );
   }

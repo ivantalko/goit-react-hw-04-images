@@ -1,29 +1,39 @@
 import { Component } from 'react';
+import css from './Searchbar.module.css';
 
 export class Searchbar extends Component {
   state = {
     value: '',
   };
-  hendlSubmit = (hendleChange = event => {
+
+  hendleChange = event => {
     const { value } = event.target;
     this.setState({ value });
-  });
+  };
+  handleFormSubmit = event => {
+    event.preventDefault();
+    if (this.state.value.trim() === '') {
+      return alert('Введите что-то');
+    }
+    this.props.onFormSubmit(this.state.value);
+    this.setState({ value: '' });
+  };
   render() {
     return (
       <>
-        <header class="searchbar">
-          <form class="form">
-            <button type="submit" class="button">
-              <span class="button-label">Search</span>
+        <header className={css.Searchbar}>
+          <form className={css.SearchForm} onSubmit={this.handleFormSubmit}>
+            <button type="submit" className={css.SearchForm_button}>
+              <span className={css.SearchForm_button_label}>Search</span>
             </button>
 
             <input
               onChange={this.hendleChange}
               value={this.state.value}
-              class="input"
+              className={css.SearchForm_input}
               type="text"
-              autocomplete="off"
-              autofocus
+              autoComplete="off"
+              autoFocus
               placeholder="Search images and photos"
             />
           </form>
