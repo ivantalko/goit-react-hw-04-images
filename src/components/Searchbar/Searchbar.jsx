@@ -4,10 +4,10 @@ export class Searchbar extends Component {
   state = {
     value: '',
   };
-  hendleChange = event => {
+  hendlSubmit = (hendleChange = event => {
     const { value } = event.target;
     this.setState({ value });
-  };
+  });
   render() {
     return (
       <>
@@ -18,6 +18,7 @@ export class Searchbar extends Component {
             </button>
 
             <input
+              onChange={this.hendleChange}
               value={this.state.value}
               class="input"
               type="text"
