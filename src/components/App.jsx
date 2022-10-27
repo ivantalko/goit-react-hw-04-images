@@ -17,14 +17,7 @@ export class App extends Component {
   handleFormSubmit = serchImageName => {
     this.setState({ serchImageName, page: 1 });
   };
-  async componentDidMount() {
-    this.setState({ isLoading: true });
-    const data = await getGallery();
-    this.setState({
-      gallery: data,
-      isLoading: false,
-    });
-  }
+
   async componentDidUpdate(_, prevState) {
     if (
       prevState.serchImageName !== this.state.serchImageName &&
