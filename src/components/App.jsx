@@ -27,7 +27,7 @@ export class App extends Component {
       const data = await getGallery(this.state.serchImageName, this.state.page);
       this.setState({ gallery: data, isLoading: false });
     }
-    if (this.state.page !== prevState.page) {
+    if (this.state.page !== prevState.page && this.state.page !== 1) {
       const data = await getGallery(this.state.serchImageName, this.state.page);
       this.setState(prevState => ({
         gallery: [...prevState.gallery, ...data],
