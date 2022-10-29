@@ -12,19 +12,22 @@ export const App = () => {
   const [gallery, setGallery] = useState([]);
   const [page, setPage] = useState(1);
   const [bigImage, setBigImage] = useState('');
+  const [totalHits, setTotalHits] = useState(0);
   useEffect(() => {
     const getApi = async () => {
       if (page !== 1) {
         const data = await getGallery(serchImageName, page);
-        setGallery(prevGallery => [...prevGallery, ...data]);
+        setGallery(prevGallery => [...prevGallery, ...data.hits]);
         setIsLoading(false);
+        setTotalHits(data.totalHits);
         return;
       }
       if (serchImageName) {
         setIsLoading(true);
         const data = await getGallery(serchImageName, page);
         setIsLoading(false);
-        setGallery(data);
+        setGallery(data.hits);
+        setTotalHits(data.totalHits);
       }
     };
     getApi();
@@ -57,7 +60,7 @@ export const App = () => {
           toggleModal={toggleModal}
         />
       )}
-      {serchImageName && !isLoading && (
+      {totalHits > gallery.length && serchImageName && !isLoading && (
         <Button handleClick={handleClick} bigImage={bigImage} />
       )}
       {bigImage && (
