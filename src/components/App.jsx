@@ -13,7 +13,7 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const [bigImage, setBigImage] = useState('');
   useEffect(() => {
-    const Api = async () => {
+    const getApi = async () => {
       if (page !== 1) {
         const data = await getGallery(serchImageName, page);
         setGallery(prevGallery => [...prevGallery, ...data]);
@@ -27,7 +27,7 @@ export const App = () => {
         setGallery(data);
       }
     };
-    Api();
+    getApi();
   }, [page, serchImageName]);
   const handleFormSubmit = serchImageName => {
     setSerchImageName(serchImageName);
