@@ -1,18 +1,16 @@
-import { Component } from 'react';
 import css from './Batton.module.css';
+import PropTypes from 'prop-types';
 
-export class Button extends Component {
-  render() {
-    return (
-      <>
-        <button
-          className={css.Button}
-          type="button"
-          onClick={this.props.handleClick}
-        >
-          Load More
-        </button>
-      </>
-    );
-  }
-}
+export const Button = ({ handleClick }) => {
+  return (
+    <>
+      <button className={css.Button} type="button" onClick={handleClick}>
+        Load More
+      </button>
+    </>
+  );
+};
+
+Button.propTypes = {
+  handleClick: PropTypes.func.isRequired,
+};

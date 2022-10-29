@@ -1,81 +1,68 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Searchbar } from './Searchbar/Searchbar';
-import { getGallery } from 'components/Helpers/Api';
+import { getGallery } from 'Helpers/Api';
 import { Loaderspiner } from './Loader/loader';
 import { Button } from './Button/Button';
 import { ModalGallary } from './Modal/Modal';
-export class App extends Component {
-  state = {
-    serchImageName: '',
-    isLoading: false,
-    gallery: [],
-    page: 1,
-    bigImage: '',
-    isOpen: false,
-  };
-  handleFormSubmit = serchImageName => {
-    this.setState({ serchImageName, page: 1 });
+
+export const App = () => {
+  const [serchImageName, setSerchImageName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [gallery, setGallery] = useState([]);
+  const [page, setPage] = useState(1);
+  const [bigImage, setBigImage] = useState('');
+  useEffect(() => {
+    const Api = async () => {
+      if (page !== 1) {
+        const data = await getGallery(serchImageName, page);
+        setGallery(prevGallery => [...prevGallery, ...data]);
+        setIsLoading(false);
+        return;
+      }
+      if (serchImageName) {
+        setIsLoading(true);
+        const data = await getGallery(serchImageName, page);
+        setIsLoading(false);
+        setGallery(data);
+      }
+    };
+    Api();
+  }, [page, serchImageName]);
+  const handleFormSubmit = serchImageName => {
+    setSerchImageName(serchImageName);
+    setPage(1);
   };
 
-  async componentDidUpdate(_, prevState) {
-    if (
-      prevState.serchImageName !== this.state.serchImageName &&
-      this.serchImageName !== ''
-    ) {
-      this.setState({ isLoading: true });
-      const data = await getGallery(this.state.serchImageName, this.state.page);
-      this.setState({ gallery: data, isLoading: false });
-    }
-    if (this.state.page !== prevState.page && this.state.page !== 1) {
-      const data = await getGallery(this.state.serchImageName, this.state.page);
-      this.setState(prevState => ({
-        gallery: [...prevState.gallery, ...data],
-        isLoading: false,
-      }));
-    }
-  }
-  handleClick = () => {
-    this.setState(prevState => {
-      return { page: prevState.page + 1 };
-    });
+  const handleClick = () => {
+    setPage(prevState => prevState + 1);
   };
-  toggleModal = largeImageURL => {
+
+  const toggleModal = largeImageURL => {
     if (!largeImageURL) {
-      this.setState({
-        bigImage: '',
-      });
+      setBigImage('');
     } else {
-      this.setState({ bigImage: largeImageURL });
+      setBigImage(largeImageURL);
     }
   };
-  getActiveImage = () => {
-    return this.state.gallery.find(item => item.id === this.state.bigImage);
-  };
-
-  render() {
-    return (
-      <>
-        <Searchbar onFormSubmit={this.handleFormSubmit} />
-        {this.state.isLoading ? (
-          <Loaderspiner />
-        ) : (
-          <ImageGallery
-            gallery={this.state.gallery}
-            bigImage={this.state.bigImage}
-            toggleModal={this.toggleModal}
-          />
-        )}
-        {this.state.serchImageName && !this.state.isLoading && (
-          <Button handleClick={this.handleClick} bigImage={this.bigImage} />
-        )}
-        {this.state.bigImage && (
-          <ModalGallary
-            toggleModal={this.toggleModal}
-            largeImageURL={this.state.bigImage}
-          />
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Searchbar onFormSubmit={handleFormSubmit} />
+      {isLoading ? (
+        <Loaderspiner />
+      ) : (
+        <ImageGallery
+          gallery={gallery}
+          bigImage={bigImage}
+          toggleModal={toggleModal}
+        />
+      )}
+      {serchImageName && !isLoading && (
+        <Button handleClick={handleClick} bigImage={bigImage} />
+      )}
+      {bigImage && (
+        <ModalGallary toggleModal={toggleModal} largeImageURL={bigImage} />
+      )}
+    </>
+  );
+};

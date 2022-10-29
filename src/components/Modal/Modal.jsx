@@ -1,31 +1,41 @@
-import { Component } from 'react';
 import { Backdrop, Modal } from './ModalStyle';
 import PropTypes from 'prop-types';
-export class ModalGallary extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.onEscapeKey);
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+const modalWindow = document.querySelector('#modal-root');
+export const ModalGallary = ({ toggleModal, largeImageURL, tags }) => {
+  useEffect(() => {
+    add();
+    return remove();
+  });
+
+  function add() {
+    window.addEventListener('keydown', onEscape);
   }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.onEscapeKey);
+  function remove() {
+    window.addEventListener('keydown', onEscape);
   }
-  onEscapeKey = e => {
-    if (e.code === 'Escape') this.props.toggleModal();
-  };
-  onClickBack = e => {
-    if (e.currentTarget === e.target) {
-      this.props.toggleModal();
+  const onEscape = event => {
+    if (event.code === 'Escape') {
+      toggleModal();
     }
   };
-  render() {
-    return (
-      <Backdrop onClick={this.onClickBack}>
-        <Modal>
-          <img src={this.props.largeImageURL} alt={this.props.tags} />
-        </Modal>
-      </Backdrop>
-    );
-  }
-}
+
+  const onClickBack = e => {
+    if (e.currentTarget === e.target) {
+      toggleModal();
+    }
+  };
+  return createPortal(
+    <Backdrop onClick={onClickBack}>
+      <Modal>
+        <img src={largeImageURL} alt={tags} />
+      </Modal>
+    </Backdrop>,
+    modalWindow
+  );
+};
+
 ModalGallary.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   largeImageURL: PropTypes.string.isRequired,
