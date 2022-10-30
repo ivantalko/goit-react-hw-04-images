@@ -5,16 +5,9 @@ import { createPortal } from 'react-dom';
 const modalWindow = document.querySelector('#modal-root');
 export const ModalGallary = ({ toggleModal, largeImageURL, tags }) => {
   useEffect(() => {
-    add();
-    return remove();
+    window.addEventListener('keydown', onEscape);
   });
 
-  function add() {
-    window.addEventListener('keydown', onEscape);
-  }
-  function remove() {
-    window.addEventListener('keydown', onEscape);
-  }
   const onEscape = event => {
     if (event.code === 'Escape') {
       toggleModal();
